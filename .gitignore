@@ -1,0 +1,11 @@
+# ignore waf lock
+.lock-waf_linux2_build
+
+# ignore screenshots
+/*.png
+
+# ignore .vscode
+/.vscode
+
+# ignore build
+/build
