@@ -1,0 +1,45 @@
+{
+  "name": "mikuwatch",
+  "author": "MakeAwesomeHappen",
+  "version": "1.0.0",
+  "keywords": ["pebble-app"],
+  "private": true,
+  "dependencies": {},
+  "pebble": {
+    "displayName": "mikuwatch",
+    "uuid": "21575ec0-59a5-44e3-b7c6-2e8856df9a30",
+    "sdkVersion": "3",
+    "enableMultiJS": false,
+    "targetPlatforms": [
+      "aplite",
+      "basalt",
+      "chalk",
+      "diorite"
+    ],
+    "watchapp": {
+      "watchface": true
+    },
+    "messageKeys": [
+      "dummy"
+    ],
+    "resources": {
+      "media": [
+        {
+          "type": "font",
+          "name": "VOCALOID_SANS_48",
+          "file": "font/vocaloid_sans_num.ttf"
+        },
+        {
+          "type": "bitmap",
+          "name": "IMAGE_BACKGROUND",
+          "file": "img/miku.png"
+        },
+        {
+          "type": "bitmap",
+          "name": "HANDS_OVERLAY",
+          "file": "img/miku_hands.png"
+        }
+      ]
+    }
+  }
+}
