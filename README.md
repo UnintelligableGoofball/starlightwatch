@@ -8,7 +8,7 @@ A Hatsune Miku Watchface
 Credits
 ==
 
-Art drawn by/belongs to: imouto (takahashisan)
+Art drawn by/belongs to: [Easy Drawing Guides](https://easydrawingguides.com/how-to-draw-hatsune-miku/)
 
 Font uses [Vocaloid Sans](https://fontstruct.com/fontstructions/show/2021191/vocaloid-sans) (modified)
 
