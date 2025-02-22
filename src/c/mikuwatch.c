@@ -75,13 +75,11 @@ static void main_window_load(Window *window) {
   s_time_layer = text_layer_create(GRect(0, PBL_IF_ROUND_ELSE(0,-16), bounds.size.w, 50));
   s_time_font = fonts_load_custom_font(resource_get_handle(RESOURCE_ID_VOCALOID_SANS_50));
 
+  window_set_background_color(s_main_window, PBL_IF_BW_ELSE(GColorBlack, GColorWhite));
+
   text_layer_set_background_color(s_time_layer, GColorClear);
 
-  #if defined(PBL_BW)
-  text_layer_set_text_color(s_time_layer, GColorWhite);
-  #else
-  text_layer_set_text_color(s_time_layer, GColorBlack);
-  #endif
+  text_layer_set_text_color(s_time_layer, PBL_IF_BW_ELSE(GColorWhite, GColorBlack));
 
   text_layer_set_text(s_time_layer, "00:00");
   //text_layer_set_font(s_time_layer, fonts_get_system_font(FONT_KEY_BITHAM_42_BOLD));
@@ -89,6 +87,26 @@ static void main_window_load(Window *window) {
   text_layer_set_text_alignment(s_time_layer, GTextAlignmentCenter);
 
   bitmap_layer_set_bitmap(s_bitmap_layer, s_background_bitmap);
+
+  // Basic slide animation 
+
+  // start position is just out of frame
+  GRect start = GRect(0, bounds.size.h, bounds.size.w, bounds.size.h);
+
+  PropertyAnimation *prop_anim = property_animation_create_layer_frame(
+    bitmap_layer_get_layer(s_bitmap_layer), &start, &bounds);
+  
+  Animation *slide_anim = property_animation_get_animation(prop_anim);
+
+  const int delay_ms = 0;
+  const int duration_ms = 600;
+
+  animation_set_curve(slide_anim, AnimationCurveEaseOut);
+  animation_set_delay(slide_anim, delay_ms);
+  animation_set_duration(slide_anim, duration_ms);
+
+  animation_schedule(slide_anim);
+  // animation code end
 
   layer_add_child(window_layer, bitmap_layer_get_layer(s_bitmap_layer));
   layer_add_child(window_layer, text_layer_get_layer(s_time_layer));
