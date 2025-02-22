@@ -1,16 +1,12 @@
 #include <pebble.h>
 
-#define NUM_BUFFER_SIZE 8
-
 static Window *s_main_window;
 
 static TextLayer *s_time_layer;
 static GFont s_time_font;
 
-static BitmapLayer *s_bitmap_layer;
-static GBitmap *s_background_bitmap;
-static BitmapLayer *s_hands_layer;
-static GBitmap *s_hands_bitmap;
+static BitmapLayer *s_bitmap_layer, *s_hands_layer;
+static GBitmap *s_background_bitmap, *s_hands_bitmap;
 
 static void prv_unobstructed_will_change(GRect final_unobstructed_window, void *context) {
   GRect full_bounds = layer_get_bounds(window_get_root_layer(s_main_window));
@@ -42,8 +38,7 @@ static void prv_unobstructed_did_change(void *context) {
     layer_remove_from_parent(bitmap_layer_get_layer(s_hands_layer));
     bitmap_layer_destroy(s_hands_layer);
     gbitmap_destroy(s_hands_bitmap);
-  }
-  
+  } 
 }
 
 
@@ -51,14 +46,13 @@ static void update_time(){
   time_t temp = time(NULL);
   struct tm *tick_time = localtime(&temp);
 
-  static char s_buffer[NUM_BUFFER_SIZE];
+  static char s_buffer[8];
   strftime(s_buffer, sizeof(s_buffer), clock_is_24h_style() ? "%H:%M" : "%I:%M", tick_time);
 
   //APP_LOG(APP_LOG_LEVEL_DEBUG, "%c", s_buffer[0]);
 
-  //remove leading zero
+  //remove leading zero if 12h format
   char *s_buffer_ptr = s_buffer;
-
   if (s_buffer[0] == '0' && !clock_is_24h_style()) {
     s_buffer_ptr++;
   }
@@ -78,8 +72,8 @@ static void main_window_load(Window *window) {
   s_bitmap_layer = bitmap_layer_create(bounds);
   s_background_bitmap = gbitmap_create_with_resource(RESOURCE_ID_IMAGE_BACKGROUND);
 
-  s_time_layer = text_layer_create(GRect(0, PBL_IF_ROUND_ELSE(0,-15), bounds.size.w, 48));
-  s_time_font = fonts_load_custom_font(resource_get_handle(RESOURCE_ID_VOCALOID_SANS_48));
+  s_time_layer = text_layer_create(GRect(0, PBL_IF_ROUND_ELSE(0,-16), bounds.size.w, 50));
+  s_time_font = fonts_load_custom_font(resource_get_handle(RESOURCE_ID_VOCALOID_SANS_50));
 
   text_layer_set_background_color(s_time_layer, GColorClear);
 
@@ -121,14 +115,13 @@ static void init() {
 
   unobstructed_area_service_subscribe(unobstructed_handler, NULL);
 
-
   window_stack_push(s_main_window, true);
 
   update_time();
-
 }
 
 static void deinit() {
+  //unload everything
   window_destroy(s_main_window);
   text_layer_destroy(s_time_layer);
   bitmap_layer_destroy(s_bitmap_layer);
