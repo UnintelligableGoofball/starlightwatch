@@ -68,9 +68,9 @@ static void main_window_load(Window *window) {
   //WINDOW bounds + layer
   Layer *window_layer = window_get_root_layer(window);
   GRect bounds_end = layer_get_bounds(window_layer);
+  // start position is just out of frame
   GRect bounds_start = GRect(0, bounds_end.size.h, bounds_end.size.w, bounds_end.size.h);
   
-
   s_bitmap_layer = bitmap_layer_create(bounds_start);
   s_background_bitmap = gbitmap_create_with_resource(RESOURCE_ID_IMAGE_BACKGROUND);
 
@@ -91,9 +91,6 @@ static void main_window_load(Window *window) {
   bitmap_layer_set_bitmap(s_bitmap_layer, s_background_bitmap);
 
   // Basic slide animation 
-
-  // start position is just out of frame
-
   PropertyAnimation *prop_anim = property_animation_create_layer_frame(
     bitmap_layer_get_layer(s_bitmap_layer), &bounds_start, &bounds_end);
   
@@ -106,9 +103,7 @@ static void main_window_load(Window *window) {
   animation_set_delay(slide_anim, delay_ms);
   animation_set_duration(slide_anim, duration_ms);
 
-  layer_set_hidden(bitmap_layer_get_layer(s_bitmap_layer), true);
   animation_schedule(slide_anim);
-  layer_set_hidden(bitmap_layer_get_layer(s_bitmap_layer), false);
   // animation code end
 
   layer_add_child(window_layer, bitmap_layer_get_layer(s_bitmap_layer));
