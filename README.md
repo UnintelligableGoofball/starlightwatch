@@ -5,6 +5,8 @@ A Hatsune Miku Watchface
 ![pebble_screenshot_2025-02-20_21-09-58](https://github.com/user-attachments/assets/b3a67fc2-8678-44c2-a622-d14832190064)
 ![pebble_screenshot_2025-02-20_21-15-49](https://github.com/user-attachments/assets/72109148-31c0-4a96-b8bc-7bff07b9e54e)
 
+Download on [Pebble Store](https://apps.rebble.io/en_US/application/67b7e94c0554c60009698bd8)
+
 Credits
 ==
 
