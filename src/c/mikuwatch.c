@@ -67,12 +67,14 @@ static void tick_handler(struct tm *tick_handler, TimeUnits units_changed) {
 static void main_window_load(Window *window) {
   //WINDOW bounds + layer
   Layer *window_layer = window_get_root_layer(window);
-  GRect bounds = layer_get_bounds(window_layer);
+  GRect bounds_end = layer_get_bounds(window_layer);
+  GRect bounds_start = GRect(0, bounds_end.size.h, bounds_end.size.w, bounds_end.size.h);
+  
 
-  s_bitmap_layer = bitmap_layer_create(bounds);
+  s_bitmap_layer = bitmap_layer_create(bounds_start);
   s_background_bitmap = gbitmap_create_with_resource(RESOURCE_ID_IMAGE_BACKGROUND);
 
-  s_time_layer = text_layer_create(GRect(0, PBL_IF_ROUND_ELSE(0,-16), bounds.size.w, 50));
+  s_time_layer = text_layer_create(GRect(0, PBL_IF_ROUND_ELSE(0,-16), bounds_end.size.w, 50));
   s_time_font = fonts_load_custom_font(resource_get_handle(RESOURCE_ID_VOCALOID_SANS_50));
 
   window_set_background_color(s_main_window, PBL_IF_BW_ELSE(GColorBlack, GColorWhite));
@@ -91,21 +93,22 @@ static void main_window_load(Window *window) {
   // Basic slide animation 
 
   // start position is just out of frame
-  GRect start = GRect(0, bounds.size.h, bounds.size.w, bounds.size.h);
 
   PropertyAnimation *prop_anim = property_animation_create_layer_frame(
-    bitmap_layer_get_layer(s_bitmap_layer), &start, &bounds);
+    bitmap_layer_get_layer(s_bitmap_layer), &bounds_start, &bounds_end);
   
   Animation *slide_anim = property_animation_get_animation(prop_anim);
 
-  const int delay_ms = 0;
-  const int duration_ms = 600;
+  const int delay_ms = 250;
+  const int duration_ms = 850;
 
   animation_set_curve(slide_anim, AnimationCurveEaseOut);
   animation_set_delay(slide_anim, delay_ms);
   animation_set_duration(slide_anim, duration_ms);
 
+  layer_set_hidden(bitmap_layer_get_layer(s_bitmap_layer), true);
   animation_schedule(slide_anim);
+  layer_set_hidden(bitmap_layer_get_layer(s_bitmap_layer), false);
   // animation code end
 
   layer_add_child(window_layer, bitmap_layer_get_layer(s_bitmap_layer));
