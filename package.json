@@ -2,9 +2,13 @@
   "name": "mikuwatch",
   "author": "denden1088",
   "version": "1.2.0",
-  "keywords": ["pebble-app"],
+  "keywords": [
+    "pebble-app"
+  ],
   "private": true,
-  "dependencies": {},
+  "dependencies": {
+    "pebble-clay": "^1.0.4"
+  },
   "pebble": {
     "displayName": "mikuwatch",
     "uuid": "21575ec0-59a5-44e3-b7c6-2e8856df9a30",
@@ -19,7 +23,9 @@
       "watchface": true
     },
     "messageKeys": [
-      "dummy"
+      "Theme",
+      "AnimationSpeed",
+      "AnimationDelay"
     ],
     "resources": {
       "media": [
@@ -39,6 +45,7 @@
           "file": "img/miku_hands.png"
         }
       ]
-    }
+    },
+    "capabilities": [ "configurable" ]
   }
 }
