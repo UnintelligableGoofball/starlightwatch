@@ -7,7 +7,7 @@ module.exports = [
         "type": "text",
         "defaultValue": "Hatsune Miku watchface settings."
     },
-    {
+    /*{
         "type": "section",
         "items": [
           {
@@ -21,7 +21,7 @@ module.exports = [
             "defaultValue": false
           }
         ]
-    },
+    },*/
     {
         "type": "section",
         "items": [
@@ -32,24 +32,24 @@ module.exports = [
           {
             "type": "select",
             "messageKey": "AnimationSpeed",
-            "defaultValue": 850,
+            "defaultValue": "850",
             "label": "Animation Speed",
             "options": [
               { 
                 "label": "Off", 
-                "value": -1 
+                "value": "0" 
               },
               { 
                 "label": "Slow",
-                "value": 850 
+                "value": "850" 
               },
               { 
                 "label": "Medium",
-                "value": 600 
+                "value": "600" 
               },
               { 
                 "label": "Fast",
-                "value": 300 
+                "value": "300" 
               }
             ]
           },

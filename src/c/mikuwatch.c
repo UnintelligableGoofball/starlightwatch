@@ -1,5 +1,13 @@
 #include <pebble.h>
 
+#define SETTINGS_KEY 39
+
+typedef struct ClaySettings {
+  bool invert_theme;
+  int animation_speed;
+  int animation_delay;
+} ClaySettings;
+
 static Window *s_main_window;
 
 static TextLayer *s_time_layer;
@@ -7,6 +15,8 @@ static GFont s_time_font;
 
 static BitmapLayer *s_bitmap_layer, *s_hands_layer;
 static GBitmap *s_background_bitmap, *s_hands_bitmap;
+
+static ClaySettings s_settings;
 
 static void prv_unobstructed_will_change(GRect final_unobstructed_window, void *context) {
   GRect full_bounds = layer_get_bounds(window_get_root_layer(s_main_window));
@@ -56,7 +66,7 @@ static void update_time(){
   if (s_buffer[0] == '0' && !clock_is_24h_style()) {
     s_buffer_ptr++;
   }
-
+  
   text_layer_set_text(s_time_layer, s_buffer_ptr);
 }
 
@@ -64,14 +74,39 @@ static void tick_handler(struct tm *tick_handler, TimeUnits units_changed) {
   update_time();
 }
 
+static void fly_in_bottom_anim() {
+  GRect bounds_end = layer_get_bounds(window_get_root_layer(s_main_window));
+  // start position is just out of frame
+  GRect bounds_start = GRect(0, bounds_end.size.h, bounds_end.size.w, bounds_end.size.h);
+
+  // Basic slide animation 
+  PropertyAnimation *prop_anim = property_animation_create_layer_frame(
+    bitmap_layer_get_layer(s_bitmap_layer), &bounds_start, &bounds_end);
+  
+  Animation *slide_anim = property_animation_get_animation(prop_anim);
+
+  //const int delay_ms = 250;
+  //const int duration_ms = 850;
+
+  animation_set_curve(slide_anim, AnimationCurveEaseOut);
+  animation_set_duration(slide_anim, s_settings.animation_speed);
+  animation_set_delay(slide_anim, s_settings.animation_delay);
+
+  animation_schedule(slide_anim);
+  // animation code end
+}
+
 static void main_window_load(Window *window) {
   //WINDOW bounds + layer
   Layer *window_layer = window_get_root_layer(window);
   GRect bounds_end = layer_get_bounds(window_layer);
   // start position is just out of frame
+  //TODO: figure out the proper command to offset, instead of this
   GRect bounds_start = GRect(0, bounds_end.size.h, bounds_end.size.w, bounds_end.size.h);
   
-  s_bitmap_layer = bitmap_layer_create(bounds_start);
+  //choose start frame based on settings
+  s_bitmap_layer = bitmap_layer_create((s_settings.animation_speed ? bounds_start: bounds_end));
+
   s_background_bitmap = gbitmap_create_with_resource(RESOURCE_ID_IMAGE_BACKGROUND);
 
   s_time_layer = text_layer_create(GRect(0, PBL_IF_ROUND_ELSE(0,-16), bounds_end.size.w, 50));
@@ -90,24 +125,14 @@ static void main_window_load(Window *window) {
 
   bitmap_layer_set_bitmap(s_bitmap_layer, s_background_bitmap);
 
-  // Basic slide animation 
-  PropertyAnimation *prop_anim = property_animation_create_layer_frame(
-    bitmap_layer_get_layer(s_bitmap_layer), &bounds_start, &bounds_end);
-  
-  Animation *slide_anim = property_animation_get_animation(prop_anim);
-
-  const int delay_ms = 250;
-  const int duration_ms = 850;
-
-  animation_set_curve(slide_anim, AnimationCurveEaseOut);
-  animation_set_delay(slide_anim, delay_ms);
-  animation_set_duration(slide_anim, duration_ms);
-
-  animation_schedule(slide_anim);
-  // animation code end
+  fly_in_bottom_anim();
 
   layer_add_child(window_layer, bitmap_layer_get_layer(s_bitmap_layer));
   layer_add_child(window_layer, text_layer_get_layer(s_time_layer));
+
+}
+
+static void prv_update_animations() {
 
 }
 
@@ -115,8 +140,49 @@ static void main_window_unload(Window *window) {
 
 }
 
+static void prv_inbox_received_handler(DictionaryIterator *iter, void *context) {
+  APP_LOG(APP_LOG_LEVEL_DEBUG, "Message recieved");
+
+  Tuple *theme_t = dict_find(iter, MESSAGE_KEY_Theme);
+  if (theme_t) {
+   s_settings.invert_theme = theme_t->value->int32 == 1;
+  }
+
+  Tuple *animation_speed_t = dict_find(iter, MESSAGE_KEY_AnimationSpeed);
+  if (animation_speed_t) {
+    s_settings.animation_speed = atoi(animation_speed_t->value->cstring);
+  }
+
+  Tuple *animation_delay_t = dict_find(iter, MESSAGE_KEY_AnimationDelay);
+  if (animation_delay_t) {
+    s_settings.animation_delay = animation_delay_t->value->int32;
+  }
+  APP_LOG(APP_LOG_LEVEL_DEBUG, "Message recieved: %is %id", s_settings.animation_speed, s_settings.animation_delay);
+
+  fly_in_bottom_anim();
+
+  //save settings to watch storage
+  persist_write_data(SETTINGS_KEY, &s_settings, sizeof(s_settings));
+}
+
+void prv_set_default_settings(){
+  s_settings.invert_theme = false;
+  s_settings.animation_speed = 850;
+  s_settings.animation_delay = 250;
+}
+
 static void init() {
   s_main_window = window_create();
+
+  prv_set_default_settings();
+
+  //load saved settings
+  persist_read_data(SETTINGS_KEY, &s_settings, sizeof(s_settings));
+
+  // Open AppMessage connection
+  app_message_register_inbox_received(prv_inbox_received_handler);
+  app_message_open(128, 128);
+
   tick_timer_service_subscribe(MINUTE_UNIT, tick_handler);
 
   window_set_window_handlers(s_main_window, (WindowHandlers) {
