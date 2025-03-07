@@ -1,6 +1,6 @@
 {
-  "name": "mikuwatch",
-  "author": "denden1088",
+  "name": "starlightwatch",
+  "author": "UnintelligableGoofball",
   "version": "1.3.0",
   "keywords": [
     "pebble-app"
@@ -10,7 +10,7 @@
     "pebble-clay": "^1.0.4"
   },
   "pebble": {
-    "displayName": "mikuwatch",
+    "displayName": "starlightwatch",
     "uuid": "21575ec0-59a5-44e3-b7c6-2e8856df9a30",
     "sdkVersion": "3",
     "enableMultiJS": true,
@@ -37,7 +37,7 @@
         {
           "type": "bitmap",
           "name": "IMAGE_BACKGROUND",
-          "file": "img/miku.png"
+          "file": "img/starlight.png"
         },
         {
           "type": "bitmap",
