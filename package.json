@@ -31,8 +31,8 @@
       "media": [
         {
           "type": "font",
-          "name": "VOCALOID_SANS_50",
-          "file": "font/vocaloid_sans_num.ttf"
+          "name": "To The Point",
+          "file": "font/ToThePointRegular-n9y4.ttf"
         },
         {
           "type": "bitmap",
