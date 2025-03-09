@@ -38,11 +38,6 @@
           "type": "bitmap",
           "name": "IMAGE_BACKGROUND",
           "file": "img/starlight.png"
-        },
-        {
-          "type": "bitmap",
-          "name": "HANDS_OVERLAY",
-          "file": "img/miku_hands.png"
         }
       ]
     },
