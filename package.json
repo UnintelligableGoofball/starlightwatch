@@ -1,37 +1,33 @@
 {
   "name": "starlightwatch",
   "author": "UnintelligableGoofball",
-  "version": "1.3.0",
+  "version": "0.2.0",
   "keywords": [
     "pebble-app"
   ],
-  "private": true,
+  "private": false,
   "dependencies": {
     "pebble-clay": "^1.0.4"
   },
   "pebble": {
     "displayName": "starlightwatch",
-    "uuid": "21575ec0-59a5-44e3-b7c6-2e8856df9a30",
+    "uuid": "d3e3fa95-e597-40d6-be80-e19589d4f813",
     "sdkVersion": "3",
     "enableMultiJS": true,
     "targetPlatforms": [
-      "aplite",
-      "basalt",
-      "diorite"
+      "basalt"
     ],
     "watchapp": {
       "watchface": true
     },
     "messageKeys": [
-      "Theme",
-      "AnimationSpeed",
-      "AnimationDelay"
+      "Theme"
     ],
     "resources": {
       "media": [
         {
           "type": "font",
-          "name": "To The Point",
+          "name": "To_The_Point_50",
           "file": "font/ToThePointRegular-n9y4.ttf"
         },
         {
@@ -41,6 +37,6 @@
         }
       ]
     },
-    "capabilities": [ "configurable" ]
+    "capabilities": []
   }
 }

@@ -16,7 +16,8 @@ static GFont s_time_font;
 static BitmapLayer *s_bitmap_layer;
 static GBitmap *s_background_bitmap;
 
-static ClaySettings s_settings;
+//static s_settings.animation_speed = 850;
+//static s_settings.animation_delay = 250;
 
 static void update_time(){
   time_t temp = time(NULL);
@@ -40,6 +41,7 @@ static void tick_handler(struct tm *tick_handler, TimeUnits units_changed) {
   update_time();
 }
 
+/*
 static void fly_in_bottom_anim() {
   GRect bounds_end = layer_get_bounds(window_get_root_layer(s_main_window));
   // start position is just out of frame
@@ -61,6 +63,7 @@ static void fly_in_bottom_anim() {
   animation_schedule(slide_anim);
   // animation code end
 }
+  */
 
 static void main_window_load(Window *window) {
   //WINDOW bounds + layer
@@ -68,15 +71,17 @@ static void main_window_load(Window *window) {
   GRect bounds_end = layer_get_bounds(window_layer);
   // start position is just out of frame
   //TODO: figure out the proper command to offset, instead of this
-  GRect bounds_start = GRect(0, bounds_end.size.h, bounds_end.size.w, bounds_end.size.h);
+  //GRect bounds_start = GRect(0, bounds_end.size.h, bounds_end.size.w, bounds_end.size.h);
   
   //choose start frame based on settings
-  s_bitmap_layer = bitmap_layer_create((s_settings.animation_speed ? bounds_start: bounds_end));
+  //s_bitmap_layer = bitmap_layer_create((s_settings.animation_speed ? bounds_start: bounds_end));
+  s_bitmap_layer = bitmap_layer_create(bounds_end);
+
 
   s_background_bitmap = gbitmap_create_with_resource(RESOURCE_ID_IMAGE_BACKGROUND);
 
   s_time_layer = text_layer_create(GRect(0, PBL_IF_ROUND_ELSE(0,-16), bounds_end.size.w, 50));
-  s_time_font = fonts_load_custom_font(resource_get_handle(RESOURCE_ID_VOCALOID_SANS_50));
+  s_time_font = fonts_load_custom_font(resource_get_handle(RESOURCE_ID_To_The_Point_50));
 
   window_set_background_color(s_main_window, PBL_IF_BW_ELSE(GColorBlack, GColorWhite));
 
@@ -91,7 +96,7 @@ static void main_window_load(Window *window) {
 
   bitmap_layer_set_bitmap(s_bitmap_layer, s_background_bitmap);
 
-  fly_in_bottom_anim();
+  //fly_in_bottom_anim();
 
   layer_add_child(window_layer, bitmap_layer_get_layer(s_bitmap_layer));
   layer_add_child(window_layer, text_layer_get_layer(s_time_layer));
@@ -102,6 +107,7 @@ static void main_window_unload(Window *window) {
 
 }
 
+/*
 static void prv_inbox_received_handler(DictionaryIterator *iter, void *context) {
   APP_LOG(APP_LOG_LEVEL_DEBUG, "Message recieved");
 
@@ -132,18 +138,19 @@ void prv_set_default_settings(){
   s_settings.animation_speed = 850;
   s_settings.animation_delay = 250;
 }
+  */
 
 static void init() {
   s_main_window = window_create();
 
-  prv_set_default_settings();
+  //prv_set_default_settings();
 
   //load saved settings
-  persist_read_data(SETTINGS_KEY, &s_settings, sizeof(s_settings));
+  //persist_read_data(SETTINGS_KEY, &s_settings, sizeof(s_settings));
 
   // Open AppMessage connection
-  app_message_register_inbox_received(prv_inbox_received_handler);
-  app_message_open(128, 128);
+  //app_message_register_inbox_received(prv_inbox_received_handler);
+  //app_message_open(128, 128);
 
   tick_timer_service_subscribe(MINUTE_UNIT, tick_handler);
 
